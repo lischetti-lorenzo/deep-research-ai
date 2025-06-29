@@ -1,0 +1,5 @@
+[project]
+name = "deep-research-ai"
+version = "0.1.0"
+description = "A deep research agent"
+requires-python = ">=3.12"
