@@ -6,7 +6,7 @@ from email_agent import email_agent
 import asyncio
 
 class ResearchManager:
-  async def run(self, query: str):
+  async def run(self, query: str, recipient_email: str):
     """ Run the deep research process, yielding the status updates and the final report"""
     trace_id = gen_trace_id()
     with trace("Research trace", trace_id=trace_id):
@@ -19,7 +19,7 @@ class ResearchManager:
       yield "Searches complete, writing report..."
       report = await self.write_report(query, search_results)
       yield "Report written, sending email..."
-      await self.send_email(report)
+      await self.send_email(report, recipient_email)
       yield "Email sent, research complete"
       yield report.markdown_report
       
