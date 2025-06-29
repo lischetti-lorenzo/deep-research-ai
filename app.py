@@ -1,6 +1,6 @@
 import gradio as gr
 from dotenv import load_dotenv
-from agents.research_manager import ResearchManager
+from research_agents.research_manager import ResearchManager
 
 load_dotenv(override=True)
 
