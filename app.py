@@ -1,12 +1,28 @@
 import gradio as gr
+from agents import Runner, trace, gen_trace_id
+from openai.types.responses import ResponseTextDeltaEvent
 from dotenv import load_dotenv
-from research_agents.research_manager import ResearchManager
+from research_agents.research_manager import research_manager_agent
 
 load_dotenv(override=True)
 
 async def run_research(query: str, recipient_email: str):
-  async for chunk in ResearchManager().run(query, recipient_email):
-    yield chunk
+  trace_id = gen_trace_id()
+  with trace("Research trace", trace_id=trace_id):
+    print(f"View trace: https://platform.openai.com/traces/trace?trace_id={trace_id}")
+    yield f"View trace: https://platform.openai.com/traces/trace?trace_id={trace_id}"
+    
+    # Run the research manager agent
+    result = Runner.run_streamed(research_manager_agent, f"Query: {query}\nRecipient email: {recipient_email}")
+
+    # Accumulate the full text and yield it each time
+    full_text = ""
+    
+    # Yield the final output
+    async for event in result.stream_events():
+      if event.type == "raw_response_event" and isinstance(event.data, ResponseTextDeltaEvent):
+        full_text += event.data.delta
+        yield full_text
 
 with gr.Blocks(theme=gr.themes.Default(primary_hue="sky")) as ui:
   gr.Markdown("# Deep Research AI")
