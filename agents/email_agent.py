@@ -29,8 +29,8 @@ def send_email(subject: str, html_body: str, recipient_email: str) -> Dict[str, 
       return {"status": "error", "message": f"Email sending failed: {str(e)}"}
 
 INSTRUCTIONS = """You are able to send a nicely formatted HTML email based on a detailed report.
-You will be provided with a detailed report. You should use your tool to send one email, providing the 
-report converted into clean, well presented HTML with an appropriate subject line."""
+You will be provided with a detailed report and the recipient email address. You should use your tool to send one email, providing the 
+report converted into clean, well presented HTML with an appropriate subject line and the recipient email address."""
 
 email_agent = Agent(
     name="Email agent",
